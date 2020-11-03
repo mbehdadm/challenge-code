@@ -9,8 +9,12 @@ public class Main {
     private static Scanner keyboard;
 
     public static void main(String[] args) {
-        keyboard = new Scanner(System.in);
-        MenuUtility.showMenu(true,0);
+        try {
+            keyboard = new Scanner(System.in);
+            MenuUtility.showMenu(true, 0);
+        }finally {
+            keyboard.close();
+        }
     }
 
     private static class MenuUtility {
@@ -32,8 +36,10 @@ public class Main {
                     case 31 -> deleteCityMenu();
                     case 32 -> deleteRoadMenu();
                     case 4 -> showPathMenu();
-                    case 5 -> inProcessing = false;
-//                    default -> showError();
+                    case 5 -> {
+                        inProcessing = false;
+                        continue;
+                    }
                 }
                 processAction(whichMenu);
             }
@@ -92,14 +98,11 @@ public class Main {
         private static final String REGEX = "[1-5]";
         private static int readInput() throws InputValidationException {
             int input = 0;
-            boolean b = keyboard.hasNextLine();
-            if(b){
-                String s = keyboard.nextLine();
-                if(s.matches(REGEX)){
-                    input = Integer.valueOf(s);
-                }else{
-                    throw new InputValidationException();
-                }
+            String s = keyboard.nextLine();
+            if(s != null && s.matches(REGEX)){
+                input = Integer.valueOf(s);
+            }else{
+                throw new InputValidationException();
             }
             return input;
         }
